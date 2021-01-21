@@ -17,6 +17,7 @@ import { orange, blue } from "@material-ui/core/colors";
 
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import { JsxFragment } from "typescript";
+import { useState } from "react";
 
 // const useStyles = makeStyles({
 //   root: {
@@ -78,22 +79,41 @@ const AppContext = React.createContext<AppState>({
 
 function onAddClick(item: CalcItem) {}
 
+//https://stackoverflow.com/a/52125944
 function InputUI(): JSX.Element {
-  const inputNum = useState(0);
+  const [inputNum, setInputNum] = useState("");
+
+  function handleSubmit(event: React.FormEvent<EventTarget>) {
+    event.preventDefault();
+
+    console.log(inputNum);
+    setInputNum("");
+  }
+
+  function onInputChange(event: React.FormEvent<HTMLDivElement>) {
+    let value = (event.target as any).value;
+    setInputNum(value);
+  }
 
   return (
     <>
-      <Box display="flex">
-        <TextField ref={inputNum} variant="outlined" label="数字を入力" />
+      <form onSubmit={handleSubmit}>
+        <TextField
+          value={inputNum}
+          variant="outlined"
+          onInput={onInputChange}
+          label="数字を入力"
+        />
         <Button
+          type="submit"
+          disabled={!inputNum}
           startIcon={<Add />}
-          // onClick={}
           variant="contained"
           color="primary"
         >
           追加
         </Button>
-      </Box>
+      </form>
     </>
   );
 }
