@@ -1,8 +1,9 @@
 import React, { useContext, useLayoutEffect, useRef } from "react";
+import * as M from "../model";
 // import { connect } from "react-redux";
 // import { Todo, fetchTodos, deleteTodo } from "../actions";
 // import { StoreState } from "../reducers";
-import "./App.css";
+import "../App.css";
 import Button from "@material-ui/core/Button";
 import { Add, Delete } from "@material-ui/icons";
 import {
@@ -17,7 +18,7 @@ import { orange, blue } from "@material-ui/core/colors";
 
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import { JsxFragment } from "typescript";
-import { useState } from "react";
+import { useState, useReducer } from "react";
 
 // const useStyles = makeStyles({
 //   root: {
@@ -45,55 +46,27 @@ import { useState } from "react";
 //   return <Button className={classes.root}>Test Styled Button</Button>;
 // }
 
-enum CalcOp {
-  PLUS,
-  MINUS,
-  MULTIPLY,
-  DIVIDE,
-}
-
-interface CalcItem {
-  id: number;
-  value: number;
-  op: CalcOp;
-}
-
-class AppState {
-  items = [] as CalcItem[];
-  private nTotalItems = 0;
-
-  createNewItem(value: string, op: CalcOp) {
-    let newItem = {
-      id: this.nTotalItems,
-      value: Number(value),
-      op: op,
-    };
-
-    this.items.push(newItem);
-
-    return newItem;
-  }
-}
-
 interface CalcItemUIProps {
-  item: CalcItem;
+  item: M.CalcItem;
   // onDeleteClick: onDeleteClick;
 }
 
-const appState = new AppState();
-const AppContext = React.createContext<AppState>(appState);
+const appState = new M.CalcModel();
+const AppContext = React.createContext<M.CalcModel>(appState);
 
 // class App extends React.Component<AppProps, AppState> {
 
-function InputUI(): JSX.Element {
+function InputUI({ dispatch }: any): JSX.Element {
   const [inputNum, setInputNum] = useState("");
   const ctx = useContext(AppContext);
 
   function onAddClick(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
     setInputNum("");
-    ctx.createNewItem(inputNum, CalcOp.PLUS);
-    console.log(ctx.items);
+    dispatch({
+      ctx: ctx,
+      value: inputNum,
+    });
   }
 
   function onInputChange(event: React.FormEvent<HTMLDivElement>) {
@@ -124,17 +97,17 @@ function InputUI(): JSX.Element {
   );
 }
 
-function itemReducer() {}
+function itemReducer(prevState: any, action: any) {
+  action.ctx.createNewItem(action.value);
+  return action.ctx.items;
+}
 
-function ItemListUI(): JSX.Element {
-  const ctx = useContext(AppContext);
-  const [items, dispatch] = useReducer(reducer, ctx.items);
-
+function ItemListUI({ items }: any): JSX.Element {
   console.log("ItemList");
 
   return (
     <>
-      {items.map((item) => (
+      {items.map((item: any) => (
         <ItemUI key={item.id} item={item} />
       ))}
     </>
@@ -147,9 +120,7 @@ const ItemUI: React.FC<CalcItemUIProps> = ({ item }) => {
       <Checkbox></Checkbox>
       <TextField
         type="number"
-        InputProps={{
-          inputProps: {},
-        }}
+        value={item.value}
         label="数字を入力してください"
       />
 
@@ -166,7 +137,10 @@ const ItemUI: React.FC<CalcItemUIProps> = ({ item }) => {
   );
 };
 
-export default function MainUI(): JSX.Element {
+export default function App(): JSX.Element {
+  const ctx = useContext(AppContext);
+  const [items, dispatch] = useReducer(itemReducer, ctx.items);
+
   return (
     <>
       <AppContext.Provider value={appState}>
@@ -176,8 +150,8 @@ export default function MainUI(): JSX.Element {
           direction="column"
           alignContent="center"
         >
-          <InputUI />
-          <ItemListUI items={appState.items} />
+          <InputUI dispatch={dispatch} />
+          <ItemListUI items={items} />
         </Grid>
       </AppContext.Provider>
     </>
