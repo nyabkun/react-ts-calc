@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useLayoutEffect, useRef } from "react";
 // import { connect } from "react-redux";
 // import { Todo, fetchTodos, deleteTodo } from "../actions";
 // import { StoreState } from "../reducers";
@@ -58,12 +58,21 @@ interface CalcItem {
   op: CalcOp;
 }
 
-interface AppProps {
-  items: CalcItem[];
-}
+class AppState {
+  items = [] as CalcItem[];
+  private nTotalItems = 0;
 
-interface AppState {
-  items: CalcItem[];
+  createNewItem(value: string, op: CalcOp) {
+    let newItem = {
+      id: this.nTotalItems,
+      value: Number(value),
+      op: op,
+    };
+
+    this.items.push(newItem);
+
+    return newItem;
+  }
 }
 
 interface CalcItemUIProps {
@@ -71,23 +80,20 @@ interface CalcItemUIProps {
   // onDeleteClick: onDeleteClick;
 }
 
-const AppContext = React.createContext<AppState>({
-  items: [],
-});
+const appState = new AppState();
+const AppContext = React.createContext<AppState>(appState);
 
 // class App extends React.Component<AppProps, AppState> {
 
-function onAddClick(item: CalcItem) {}
-
-//https://stackoverflow.com/a/52125944
 function InputUI(): JSX.Element {
   const [inputNum, setInputNum] = useState("");
+  const ctx = useContext(AppContext);
 
-  function handleSubmit(event: React.FormEvent<EventTarget>) {
+  function onAddClick(event: React.FormEvent<EventTarget>) {
     event.preventDefault();
-
-    console.log(inputNum);
     setInputNum("");
+    ctx.createNewItem(inputNum, CalcOp.PLUS);
+    console.log(ctx.items);
   }
 
   function onInputChange(event: React.FormEvent<HTMLDivElement>) {
@@ -97,7 +103,7 @@ function InputUI(): JSX.Element {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={onAddClick}>
         <TextField
           value={inputNum}
           variant="outlined"
@@ -118,8 +124,13 @@ function InputUI(): JSX.Element {
   );
 }
 
+function itemReducer() {}
+
 function ItemListUI(): JSX.Element {
-  const { items } = useContext(AppContext);
+  const ctx = useContext(AppContext);
+  const [items, dispatch] = useReducer(reducer, ctx.items);
+
+  console.log("ItemList");
 
   return (
     <>
@@ -158,9 +169,17 @@ const ItemUI: React.FC<CalcItemUIProps> = ({ item }) => {
 export default function MainUI(): JSX.Element {
   return (
     <>
-      <Grid container justify="center" direction="column" alignContent="center">
-        <InputUI />
-      </Grid>
+      <AppContext.Provider value={appState}>
+        <Grid
+          container
+          justify="center"
+          direction="column"
+          alignContent="center"
+        >
+          <InputUI />
+          <ItemListUI items={appState.items} />
+        </Grid>
+      </AppContext.Provider>
     </>
   );
 }
