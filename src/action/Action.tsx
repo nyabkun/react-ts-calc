@@ -6,6 +6,7 @@ export enum ActionType {
   ADD,
   DELETE,
   REFRESH,
+  CLEAR,
 }
 
 export interface Action {
@@ -25,6 +26,8 @@ export const itemListReducer: Reducer<CalcItem[], Action> = (
       return _delete(prevState, action);
     case ActionType.REFRESH:
       return _refresh(prevState, action);
+    case ActionType.CLEAR:
+      return _clear(prevState, action);
     default:
       return action.m.items;
   }
@@ -52,10 +55,14 @@ function _delete(prevState: CalcItem[], action: Action) {
 }
 
 function _refresh(prevState: CalcItem[], action: Action) {
-  console.log("refresh");
-
   action.m.refreshSum();
 
   return [...action.m.items];
-  // return action.m.items;
+  // return act
+}
+
+function _clear(prevState: CalcItem[], action: Action) {
+  action.m.clear();
+
+  return action.m.items;
 }

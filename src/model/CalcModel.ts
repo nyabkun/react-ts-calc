@@ -8,6 +8,12 @@ export class CalcModel {
 
   dispatch: React.Dispatch<Action> | null = null;
 
+  clear() {
+    this.items = [];
+
+    this.refreshSum();
+  }
+
   deleteItem(id: number) {
     this.items = this.items.filter((item) => item.id !== id);
 

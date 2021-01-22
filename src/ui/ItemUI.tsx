@@ -1,13 +1,39 @@
 import { Delete } from "@material-ui/icons";
-import { Checkbox, Button, TextField } from "@material-ui/core";
+import * as U from "../util/Util";
+import {
+  Checkbox,
+  Button,
+  TextField,
+  Box,
+  makeStyles,
+} from "@material-ui/core";
 import { AppContext } from "../model";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { ActionType } from "../action/Action";
 import { useState } from "react";
-import { isConstructorDeclaration } from "typescript";
+
+// const useStyles = makeStyles((theme) => ({
+//   box: {
+//     // padding: 10,
+//     // height: 200,
+//     // color: "palette.primary",
+//     display: "flex",
+//     flexDirection: "row",
+//     justifyContent: "center",
+//   },
+//   txt: {
+//     margin: 5,
+//   },
+//   btn: {
+//     margin: 5,
+//   },
+// }));
 
 export const ItemUI: React.FC<any> = ({ item, dispatch }) => {
+  // const classes = useStyles();
   const ctx = useContext(AppContext);
+  const [inputNum, setInputNum] = useState(item.value);
+  const [inputError, setInputError] = useState(false);
   const [checked, setChecked] = useState(item.active);
 
   function onDeleteClick(e: any) {
@@ -29,25 +55,63 @@ export const ItemUI: React.FC<any> = ({ item, dispatch }) => {
     });
   }
 
+  function onInputChange(e: any) {
+    // ctx.dispatch!({
+    //   type: ActionType.REFRESH,
+    //   m: ctx,
+    // });
+    try {
+      let numStr = e.target.value.replaceAll(",", "").replaceAll(".", "");
+
+      let num = U.toNumber(numStr);
+
+      if (!isNaN(num)) {
+        item.value = num;
+        setInputNum(U.formatNumComma(num));
+        setInputError(false);
+      } else {
+        setInputError(true);
+      }
+    } catch (error) {
+      setInputError(true);
+    } finally {
+      ctx.dispatch!({
+        type: ActionType.REFRESH,
+        m: ctx,
+      });
+    }
+  }
+
   return (
     <div key={item.id}>
-      <Checkbox checked={item.active} onChange={onCheckBoxClick}></Checkbox>
-      <TextField
-        type="number"
-        value={item.value}
-        label="数字を入力してください"
-      />
+      <Box>
+        {/* className={classes.box}> */}
+        <Checkbox
+          // className={classes.btn}
+          color="primary"
+          checked={item.active}
+          onChange={onCheckBoxClick}
+        ></Checkbox>
 
-      <Button
-        // onClick={() => onDeleteClick(item.id)}
-        startIcon={<Delete />}
-        size="small"
-        variant="contained"
-        color="secondary"
-        onClick={onDeleteClick}
-      >
-        削除
-      </Button>
+        <TextField
+          // className={classes.txt}
+          onInput={onInputChange}
+          // type="number"
+          value={U.formatNumComma(inputNum)}
+        />
+
+        <Button
+          // className={classes.btn}
+          // onClick={() => onDeleteClick(item.id)}
+          startIcon={<Delete />}
+          size="small"
+          variant="contained"
+          color="secondary"
+          onClick={onDeleteClick}
+        >
+          削除
+        </Button>
+      </Box>
     </div>
   );
 };
