@@ -4,6 +4,7 @@ import React from "react";
 
 interface INTextFieldState {
   textInput: string;
+  valid: boolean;
 }
 
 //https://stackoverflow.com/questions/56085306/error-message-an-interface-can-only-extend-an-object-type-or-intersection-of-o
@@ -16,15 +17,14 @@ export class NTextField extends React.Component<
   INTextFieldProps,
   INTextFieldState
 > {
-  // numValue : number = NaN;
-  // strRawInputValue : string = "";
-  isNotNumber = false;
-
   constructor(props: INTextFieldProps) {
     super(props);
+
+    let defaultInput = "";
+
     this.state = {
-      textInput: "",
-      // strRawInputValue: props.numvalue.toString(),
+      textInput: defaultInput,
+      valid: this.isValid(defaultInput),
     };
   }
 
@@ -34,26 +34,15 @@ export class NTextField extends React.Component<
     });
   }
 
-  // componentDidMount() {
-  // }
-
-  // componentWillUnmount() {
-  // }
-
-  // handleChange() {
-  //   // Update component state whenever the data source changes
-  //   this.setState({
-  //     strRawInputValue: this.props.numvalue.toString(),
-  //   });
-  // }
-
   onInputChange = (e: any) => {
+    let text = e.target.value;
+
     this.setState({
-      textInput: e.target.value,
+      textInput: text,
+      valid: this.isValid(text),
     });
 
-    let num = U.toNumber(e.target.value as string);
-    // e.target.querySelector("input").value = U.formatNumComma(num);
+    let num = U.toNumber(text);
 
     if (this.props.onNumInput) {
       // setState は非同期なので、呼び出したあとすぐにその値にはなってない
@@ -62,25 +51,42 @@ export class NTextField extends React.Component<
     }
   };
 
+  private isValid(text: string) {
+    let valid = true;
+    try {
+      let num = U.toNumber(text);
+      if (isNaN(num)) {
+        valid = false;
+      }
+    } catch (error) {
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  private checkValid(text: string) {
+    let stateValid = this.state.valid;
+    let curValid = !this.isValid(text);
+
+    if (stateValid !== curValid) {
+      this.setState({
+        ...this.state,
+        valid: curValid,
+      });
+    }
+  }
+
   private formatNumString(value: string): string {
-    this.isNotNumber = false;
     try {
       let num = U.toNumber(value);
       if (isNaN(num)) {
-        this.isNotNumber = true;
         return value;
       }
       return U.formatNumComma(num);
     } catch (error) {
-      this.isNotNumber = true;
       return value;
     }
-  }
-
-  private invokeError(value: string) {
-    // this.setState({
-    //   strRawInputValue: value,
-    // });
   }
 
   render() {
@@ -88,7 +94,7 @@ export class NTextField extends React.Component<
       <TextField
         {...this.props}
         onInput={this.onInputChange}
-        error={this.isNotNumber}
+        error={!this.state.valid}
         // helperText="半角数字を入力してください"
         // error={inputError}
         value={this.formatNumString(this.state.textInput)}
