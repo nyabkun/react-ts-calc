@@ -1,9 +1,8 @@
-import { Box, Button, Grid, makeStyles, TextField } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import { Add, Clear } from "@material-ui/icons";
-import React, { useContext, useState } from "react";
+import React, { useRef, useState } from "react";
 import { ActionType } from "../action/Action";
-import { AppContext } from "../model";
-import * as U from "../util/Util";
+import { NTextField } from "../customui/NTextField";
 
 // const useStyles = makeStyles((theme) => ({
 //   box: {
@@ -22,52 +21,56 @@ import * as U from "../util/Util";
 //   },
 // }));
 
-export function InputUI(): JSX.Element {
+export function InputUI({ dispatch, canClear }: any): JSX.Element {
   // const classes = useStyles();
-  const [inputNum, setInputNum] = useState("");
-  const [inputError, setInputError] = useState(false);
-  const ctx = useContext(AppContext);
+  // const [inputNum, setInputNum] = useState("");
+  // inputNum はレンダリング状態に関係なく保持しておきたい => useState じゃなくて useRef
+  const inputNum = useRef(0);
+  const inputEle = useRef<any>(null);
+  // const ctx = useContext(AppContext);
 
   function onSubmit(e: any) {
     e.preventDefault();
 
-    ctx.dispatch!({
+    dispatch!({
       type: ActionType.ADD,
-      m: ctx,
-      payload: U.toNumber(inputNum),
+      payload: inputNum.current,
     });
 
-    setInputNum("");
+    inputEle.current.clear();
+
+    // setInputNum("");
+    // setInputNum(0);
 
     e.target.querySelector("input").focus();
   }
 
   function onClearClick(e: any) {
-    ctx.dispatch!({
+    dispatch!({
       type: ActionType.CLEAR,
-      m: ctx,
     });
   }
 
-  function onInputChange(e: any) {
+  function onNumInput(value: number) {
+    inputNum.current = value;
     // ctx.dispatch!({
     //   type: ActionType.REFRESH,
     //   m: ctx,
     // });
-    try {
-      let numStr = e.target.value.replaceAll(",", "").replaceAll(".", "");
-
-      let num = U.toNumber(numStr);
-
-      if (!isNaN(num)) {
-        setInputNum(U.formatNumComma(num));
-        setInputError(false);
-      } else {
-        setInputError(true);
-      }
-    } catch (error) {
-      setInputError(true);
-    }
+    // try {
+    //   // let numStr = e.target.value.replaceAll(",", "").replaceAll(".", "");
+    //   // let num = U.toNumber(numStr);
+    //   let num = e.target.value;
+    //   if (!isNaN(num)) {
+    //     setInputNum(e.target.value);
+    //     // setInputNum(U.formatNumComma(num));
+    //     setInputError(false);
+    //   } else {
+    //     setInputError(true);
+    //   }
+    // } catch (error) {
+    //   setInputError(true);
+    // }
   }
 
   return (
@@ -75,7 +78,14 @@ export function InputUI(): JSX.Element {
       <form onSubmit={onSubmit}>
         <Grid container direction="column" spacing={2}>
           <Grid item>
-            <TextField
+            <NTextField
+              ref={inputEle}
+              // defaultInput={defaultInputValue}
+              onNumInput={onNumInput}
+              variant="outlined"
+              label="数字を入力"
+            ></NTextField>
+            {/* <TextField
               // className={classes.txt}
               value={inputNum}
               variant="outlined"
@@ -83,7 +93,7 @@ export function InputUI(): JSX.Element {
               label="数字を入力"
               // helperText="半角数字を入力してください"
               error={inputError}
-            />
+            /> */}
           </Grid>
           <Grid item>
             <Grid container spacing={1} justify="flex-end" item={true}>
@@ -103,12 +113,12 @@ export function InputUI(): JSX.Element {
                 <Button
                   // className={classes.btn}
                   onClick={onClearClick}
-                  disabled={!ctx.items || ctx.items.length === 0}
+                  disabled={!canClear}
                   startIcon={<Clear />}
                   variant="contained"
                   color="secondary"
                 >
-                  クリア
+                  オールクリア
                 </Button>
               </Grid>
             </Grid>

@@ -2,9 +2,7 @@ import { Grid } from "@material-ui/core";
 import React from "react";
 import { ItemUI } from "./";
 
-export function ItemListUI({ items }: any): JSX.Element {
-  console.log("ItemList");
-
+export function ItemListUI({ items, dispatch }: any): JSX.Element {
   return (
     <Grid
       container
@@ -15,7 +13,7 @@ export function ItemListUI({ items }: any): JSX.Element {
     >
       {items.map((item: any) => (
         <Grid item>
-          <ItemUI key={item.id} item={item} />
+          <ItemUI key={item.id} item={item} dispatch={dispatch} />
         </Grid>
       ))}
     </Grid>

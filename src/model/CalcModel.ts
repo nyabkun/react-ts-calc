@@ -6,8 +6,6 @@ export class CalcModel {
   nTotalItems = 0;
   sum = 0;
 
-  dispatch: React.Dispatch<Action> | null = null;
-
   clear() {
     this.items = [];
 
@@ -65,6 +63,3 @@ export enum CalcOp {
   MULTIPLY,
   DIVIDE,
 }
-
-const calcModel = new CalcModel();
-export const AppContext = React.createContext(calcModel);

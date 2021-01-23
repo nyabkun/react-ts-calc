@@ -1,14 +1,7 @@
 import { Delete } from "@material-ui/icons";
 import * as U from "../util/Util";
-import {
-  Checkbox,
-  Button,
-  TextField,
-  Box,
-  makeStyles,
-} from "@material-ui/core";
-import { AppContext } from "../model";
-import React, { useContext } from "react";
+import { Checkbox, Button, TextField, Box } from "@material-ui/core";
+import React from "react";
 import { ActionType } from "../action/Action";
 import { useState } from "react";
 
@@ -31,15 +24,14 @@ import { useState } from "react";
 
 export const ItemUI: React.FC<any> = ({ item, dispatch }) => {
   // const classes = useStyles();
-  const ctx = useContext(AppContext);
+  // const ctx = useContext(AppContext);
   const [inputNum, setInputNum] = useState(item.value);
   const [inputError, setInputError] = useState(false);
   const [checked, setChecked] = useState(item.active);
 
   function onDeleteClick(e: any) {
-    ctx.dispatch!({
+    dispatch!({
       type: ActionType.DELETE,
-      m: ctx,
       payload: item.id,
     });
   }
@@ -49,9 +41,8 @@ export const ItemUI: React.FC<any> = ({ item, dispatch }) => {
     item.active = e.target.checked;
     console.log("check clicked");
 
-    ctx.dispatch!({
+    dispatch!({
       type: ActionType.REFRESH,
-      m: ctx,
     });
   }
 
@@ -75,9 +66,8 @@ export const ItemUI: React.FC<any> = ({ item, dispatch }) => {
     } catch (error) {
       setInputError(true);
     } finally {
-      ctx.dispatch!({
+      dispatch!({
         type: ActionType.REFRESH,
-        m: ctx,
       });
     }
   }

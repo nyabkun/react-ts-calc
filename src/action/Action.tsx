@@ -1,6 +1,7 @@
 import React from "react";
 import { Reducer } from "react";
-import { CalcItem, CalcModel, CalcOp } from "../model";
+import { CalcModel, CalcOp } from "../model";
+import { AppState } from "../ui";
 
 export enum ActionType {
   ADD,
@@ -11,25 +12,28 @@ export enum ActionType {
 
 export interface Action {
   type: ActionType;
-  m: CalcModel;
   payload?: any;
 }
 
-export const itemListReducer: Reducer<CalcItem[], Action> = (
-  prevState: CalcItem[],
+export const calcModelReducer: Reducer<AppState, Action> = (
+  state: AppState,
   action: Action
 ) => {
   switch (action.type) {
     case ActionType.ADD:
-      return _add(prevState, action);
+      _add(state, action);
+      return { ...state };
     case ActionType.DELETE:
-      return _delete(prevState, action);
+      _delete(state, action);
+      return { ...state };
     case ActionType.REFRESH:
-      return _refresh(prevState, action);
+      _refresh(state, action);
+      return { ...state };
     case ActionType.CLEAR:
-      return _clear(prevState, action);
+      _clear(state, action);
+      return { ...state };
     default:
-      return action.m.items;
+      return state;
   }
 };
 
@@ -44,25 +48,23 @@ export const itemListReducer: Reducer<CalcItem[], Action> = (
 //   return action.m.items;
 // } :  Reducer<any, any>;
 
-function _add(prevState: CalcItem[], action: Action) {
-  action.m.createNewItem(action.payload, CalcOp.PLUS);
-  return action.m.items;
+function _add(state: AppState, action: Action) {
+  state.model.createNewItem(action.payload, CalcOp.PLUS);
+  state.currentInput = 0;
+  return state;
 }
 
-function _delete(prevState: CalcItem[], action: Action) {
-  action.m.deleteItem(action.payload);
-  return action.m.items;
+function _delete(state: AppState, action: Action) {
+  state.model.deleteItem(action.payload);
+  return state;
 }
 
-function _refresh(prevState: CalcItem[], action: Action) {
-  action.m.refreshSum();
-
-  return [...action.m.items];
-  // return act
+function _refresh(state: AppState, action: Action) {
+  state.model.refreshSum();
+  return state;
 }
 
-function _clear(prevState: CalcItem[], action: Action) {
-  action.m.clear();
-
-  return action.m.items;
+function _clear(state: AppState, action: Action) {
+  state.model.clear();
+  return state;
 }
