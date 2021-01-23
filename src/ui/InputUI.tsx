@@ -2,7 +2,8 @@ import { Button, Grid } from "@material-ui/core";
 import { Add, Clear } from "@material-ui/icons";
 import React, { useRef, useState } from "react";
 import { ActionType } from "../action/Action";
-import { NTextField } from "../customui/NTextField";
+import { TextToValueResult } from "../custom-ui/CTextField";
+import { NCTextField } from "../custom-ui/NCTextField";
 
 // const useStyles = makeStyles((theme) => ({
 //   box: {
@@ -25,7 +26,8 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
   // const classes = useStyles();
   // const [inputNum, setInputNum] = useState("");
   // inputNum はレンダリング状態に関係なく保持しておきたい => useState じゃなくて useRef
-  const inputNum = useRef(0);
+
+  const [inputNum, setInputNum] = useState(0);
   const inputEle = useRef<any>(null);
   // const ctx = useContext(AppContext);
 
@@ -34,7 +36,8 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
 
     dispatch!({
       type: ActionType.ADD,
-      payload: inputNum.current,
+      // payload: inputEle.current.getInputNum(),
+      payload: inputNum,
     });
 
     inputEle.current.clear();
@@ -51,8 +54,9 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
     });
   }
 
-  function onNumInput(value: number) {
-    inputNum.current = value;
+  function onInputNum(result: TextToValueResult<number>) {
+    setInputNum(result.value);
+    // inputNum.current = value;
     // ctx.dispatch!({
     //   type: ActionType.REFRESH,
     //   m: ctx,
@@ -73,18 +77,25 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
     // }
   }
 
+  function isInputValid() {
+    return !isNaN(inputNum) && inputNum !== 0;
+    // if (inputEle.current) {
+    //   return inputEle.current.isValid();
+    // }
+  }
+
   return (
     <>
       <form onSubmit={onSubmit}>
         <Grid container direction="column" spacing={2}>
           <Grid item>
-            <NTextField
+            <NCTextField
               ref={inputEle}
               // defaultInput={defaultInputValue}
-              onNumInput={onNumInput}
+              onInputValue={onInputNum}
               variant="outlined"
               label="数字を入力"
-            ></NTextField>
+            ></NCTextField>
             {/* <TextField
               // className={classes.txt}
               value={inputNum}
@@ -101,7 +112,7 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
                 <Button
                   // className={classes.btn}
                   type="submit"
-                  disabled={!inputNum}
+                  disabled={!isInputValid()}
                   startIcon={<Add />}
                   variant="contained"
                   color="primary"

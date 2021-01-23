@@ -9,7 +9,6 @@ interface INTextFieldState {
 
 //https://stackoverflow.com/questions/56085306/error-message-an-interface-can-only-extend-an-object-type-or-intersection-of-o
 type INTextFieldProps = TextFieldProps & {
-  // defaultInput: number;
   onNumInput: (value: number) => void;
 };
 
@@ -17,21 +16,24 @@ export class NTextField extends React.Component<
   INTextFieldProps,
   INTextFieldState
 > {
+  textFieldRef = React.createRef<any>();
+
+  defaultState: INTextFieldState;
+
   constructor(props: INTextFieldProps) {
     super(props);
 
-    let defaultInput = "";
-
-    this.state = {
-      textInput: defaultInput,
-      valid: this.isValid(defaultInput),
+    this.defaultState = {
+      textInput: "",
+      valid: this._isValid(""),
     };
+
+    this.state = this.defaultState;
   }
 
   clear() {
-    this.setState({
-      textInput: "",
-    });
+    this.setState(this.defaultState);
+    this.props.onNumInput(0);
   }
 
   onInputChange = (e: any) => {
@@ -39,19 +41,35 @@ export class NTextField extends React.Component<
 
     this.setState({
       textInput: text,
-      valid: this.isValid(text),
+      valid: this._isValid(text),
     });
 
-    let num = U.toNumber(text);
+    try {
+      let num = U.toNumber(text);
 
-    if (this.props.onNumInput) {
-      // setState は非同期なので、呼び出したあとすぐにその値にはなってない
-      // this.props.onNumInput(U.toNumber(this.state.strRawInputValue));
-      this.props.onNumInput(num);
+      if (this.props.onNumInput) {
+        // setState は非同期なので、呼び出したあとすぐにその値にはなってない
+        // this.props.onNumInput(U.toNumber(this.state.strRawInputValue));
+        this.props.onNumInput(num);
+      }
+    } catch (error) {
+      this.props.onNumInput(NaN);
     }
   };
 
-  private isValid(text: string) {
+  num() {
+    return this.formatNumString(this.state.textInput);
+  }
+
+  text() {
+    return this.textFieldRef.current.value;
+  }
+
+  isValid(): boolean {
+    return this._isValid(this.text());
+  }
+
+  private _isValid(text: string): boolean {
     let valid = true;
     try {
       let num = U.toNumber(text);
@@ -67,7 +85,7 @@ export class NTextField extends React.Component<
 
   private checkValid(text: string) {
     let stateValid = this.state.valid;
-    let curValid = !this.isValid(text);
+    let curValid = !this._isValid(text);
 
     if (stateValid !== curValid) {
       this.setState({
@@ -93,11 +111,12 @@ export class NTextField extends React.Component<
     return (
       <TextField
         {...this.props}
+        ref={this.textFieldRef}
         onInput={this.onInputChange}
         error={!this.state.valid}
         // helperText="半角数字を入力してください"
         // error={inputError}
-        value={this.formatNumString(this.state.textInput)}
+        value={this.num()}
         // value={U.formatNumComma(this.props.defaultInput)}
       />
     );

@@ -12,8 +12,8 @@ export function ItemListUI({ items, dispatch }: any): JSX.Element {
       spacing={5}
     >
       {items.map((item: any) => (
-        <Grid item>
-          <ItemUI key={item.id} item={item} dispatch={dispatch} />
+        <Grid item key={item.id}>
+          <ItemUI item={item} dispatch={dispatch} />
         </Grid>
       ))}
     </Grid>
