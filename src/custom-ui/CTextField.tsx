@@ -10,13 +10,10 @@ interface CTextFieldState {
 
 interface CTextFieldOwnProps<T> {
   onInputValue?: (result: TextToValueResult<T>) => void;
-  // inputFormatter?: (text: string) => string;
-
+  value: T;
   errorValue: T;
-  defaultText: string;
   textToValue: (text: string) => T;
   valueToText: (value: T) => string;
-  // validator?: (value: string) => boolean;
 }
 
 //https://stackoverflow.com/questions/56085306/error-message-an-interface-can-only-extend-an-object-type-or-intersection-of-o
@@ -39,6 +36,7 @@ export class CTextField<T> extends React.Component<
   //   // parser: (txt :string) => txt,
   //   formatter: (value: any) => JSON.stringify(value),
   // }
+  // defaultTxt: string;
 
   textFieldRef = React.createRef<any>();
 
@@ -49,28 +47,23 @@ export class CTextField<T> extends React.Component<
   constructor(props: CTextFieldProps<T>) {
     super(props);
 
-    let defaultTxt = props.defaultText;
-    if (!defaultTxt) {
-      defaultTxt = "";
-    }
+    let defaultTxt = props.value ? this.valueToText(props.value) : "";
 
-    let result = this.formatText(defaultTxt);
+    this.defaultResult = this.textToValue(defaultTxt);
 
     this.defaultState = {
-      text: result.formattedText,
-      errorMsg: result.textToValueResult.errorMsg,
+      text: defaultTxt,
+      errorMsg: this.defaultResult.errorMsg,
     };
 
     this.state = this.defaultState;
-
-    this.defaultResult = this.textToValue(props.defaultText);
   }
 
   clear() {
     this.setState(this.defaultState);
     if (this.props.onInputValue) {
-      let defaultParseResult = this.textToValue(this.props.defaultText);
-      this.props.onInputValue(defaultParseResult);
+      // let defaultParseResult = this.textToValue(this.defaultTxt);
+      this.props.onInputValue(this.defaultResult);
     }
   }
 
@@ -133,6 +126,8 @@ export class CTextField<T> extends React.Component<
   }
 
   private textToValue(text: string): TextToValueResult<T> {
+    if (!text) text = "";
+
     try {
       let value = this.props.textToValue(text);
       return {

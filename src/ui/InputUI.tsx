@@ -23,27 +23,18 @@ import { NCTextField } from "../custom-ui/NCTextField";
 // }));
 
 export function InputUI({ dispatch, canClear }: any): JSX.Element {
-  // const classes = useStyles();
-  // const [inputNum, setInputNum] = useState("");
-  // inputNum はレンダリング状態に関係なく保持しておきたい => useState じゃなくて useRef
-
   const [inputNum, setInputNum] = useState(0);
   const inputEle = useRef<any>(null);
-  // const ctx = useContext(AppContext);
 
   function onSubmit(e: any) {
     e.preventDefault();
 
     dispatch!({
       type: ActionType.ADD,
-      // payload: inputEle.current.getInputNum(),
       payload: inputNum,
     });
 
     inputEle.current.clear();
-
-    // setInputNum("");
-    // setInputNum(0);
 
     e.target.querySelector("input").focus();
   }
@@ -56,32 +47,10 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
 
   function onInputNum(result: TextToValueResult<number>) {
     setInputNum(result.value);
-    // inputNum.current = value;
-    // ctx.dispatch!({
-    //   type: ActionType.REFRESH,
-    //   m: ctx,
-    // });
-    // try {
-    //   // let numStr = e.target.value.replaceAll(",", "").replaceAll(".", "");
-    //   // let num = U.toNumber(numStr);
-    //   let num = e.target.value;
-    //   if (!isNaN(num)) {
-    //     setInputNum(e.target.value);
-    //     // setInputNum(U.formatNumComma(num));
-    //     setInputError(false);
-    //   } else {
-    //     setInputError(true);
-    //   }
-    // } catch (error) {
-    //   setInputError(true);
-    // }
   }
 
   function isInputValid() {
     return !isNaN(inputNum) && inputNum !== 0;
-    // if (inputEle.current) {
-    //   return inputEle.current.isValid();
-    // }
   }
 
   return (
@@ -91,26 +60,16 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
           <Grid item>
             <NCTextField
               ref={inputEle}
-              // defaultInput={defaultInputValue}
               onInputValue={onInputNum}
               variant="outlined"
               label="数字を入力"
+              value={NaN}
             ></NCTextField>
-            {/* <TextField
-              // className={classes.txt}
-              value={inputNum}
-              variant="outlined"
-              onInput={onInputChange}
-              label="数字を入力"
-              // helperText="半角数字を入力してください"
-              error={inputError}
-            /> */}
           </Grid>
           <Grid item>
             <Grid container spacing={1} justify="flex-end" item={true}>
               <Grid item>
                 <Button
-                  // className={classes.btn}
                   type="submit"
                   disabled={!isInputValid()}
                   startIcon={<Add />}
@@ -122,7 +81,6 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
               </Grid>
               <Grid item>
                 <Button
-                  // className={classes.btn}
                   onClick={onClearClick}
                   disabled={!canClear}
                   startIcon={<Clear />}
