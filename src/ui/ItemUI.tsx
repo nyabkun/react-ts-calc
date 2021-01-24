@@ -1,11 +1,9 @@
+import { Box, Button, Checkbox, Grid } from "@material-ui/core";
 import { Delete } from "@material-ui/icons";
-import { Checkbox, Button, Box } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import { ActionType } from "../action/Action";
-import { useState } from "react";
-import { NCTextField } from "../custom-ui/NCTextField";
 import { TextToValueResult } from "../custom-ui/CTextField";
-import { isForOfStatement } from "typescript";
+import { NCTextField } from "../custom-ui/NCTextField";
 
 export const ItemUI: React.FC<any> = ({ item, dispatch }) => {
   const [inputNum, setInputNum] = useState(item.value);
@@ -31,8 +29,6 @@ export const ItemUI: React.FC<any> = ({ item, dispatch }) => {
   function onInputNum(result: TextToValueResult<number>) {
     setInputNum(result.value);
 
-    // if(!result.errorMsg) {
-    // }
     item.value = result.value;
 
     dispatch!({
@@ -41,31 +37,30 @@ export const ItemUI: React.FC<any> = ({ item, dispatch }) => {
   }
 
   return (
-    <div key={item.id}>
-      <Box>
-        <Checkbox
-          color="primary"
-          checked={item.active}
-          onChange={onCheckBoxClick}
-        ></Checkbox>
-
+    <Box display="flex">
+      <Checkbox
+        color="primary"
+        checked={item.active}
+        onChange={onCheckBoxClick}
+      ></Checkbox>
+      <Box flexGrow={1} mx={2}>
         <NCTextField
+          fullWidth={true}
           onInputValue={onInputNum}
           variant="standard"
-          label="数字を変更"
+          // label="数字を変更"
           value={item.value}
         />
-
-        <Button
-          startIcon={<Delete />}
-          size="small"
-          variant="contained"
-          color="secondary"
-          onClick={onDeleteClick}
-        >
-          削除
-        </Button>
       </Box>
-    </div>
+      <Button
+        startIcon={<Delete />}
+        size="small"
+        variant="contained"
+        color="secondary"
+        onClick={onDeleteClick}
+      >
+        削除
+      </Button>
+    </Box>
   );
 };

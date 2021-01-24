@@ -6,6 +6,7 @@ import {
   Grid,
   MuiThemeProvider,
   responsiveFontSizes,
+  Toolbar,
   Typography,
 } from "@material-ui/core";
 import React, { useReducer } from "react";
@@ -67,48 +68,35 @@ export default function App(): JSX.Element {
   return (
     <>
       <MuiThemeProvider theme={theme}>
-        <Container maxWidth="sm">
+        <Container maxWidth="md">
           <AppBar position="sticky">
-            {/* <Box m="auto">
-            <Typography variant="h3">
-              ちょ～低機能計算機（足し算のみ）
-            </Typography>
-          </Box> */}
-            {/* <Grid container direction="column">
-            <Grid item> */}
             <Box m="auto">
               <SumUI sum={state.model.sum} />
             </Box>
-            {/* </Grid>
-          </Grid> */}
           </AppBar>
-          {/* <AppContext.Provider value={ctx}> */}
-          <Box m={5}>
-            <Grid
-              container
-              direction="column"
-              justify="center"
-              alignItems="center"
-              spacing={5}
-            >
-              <Grid item>
-                <Typography variant="button">
+          <Grid
+            container
+            direction="column"
+            justify="center"
+            alignItems="center"
+            spacing={5}
+          >
+            <Box m={5} style={{ width: "80%" }}>
+              <Typography variant="button">
+                <Grid item>
                   <InputUI
                     dispatch={dispatch}
                     canClear={
                       state.model.items && state.model.items.length !== 0
                     }
                   />
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography variant="button">
+                </Grid>
+                <Grid item>
                   <ItemListUI items={state.model.items} dispatch={dispatch} />
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
-          {/* </AppContext.Provider> */}
+                </Grid>
+              </Typography>
+            </Box>
+          </Grid>
         </Container>
       </MuiThemeProvider>
     </>

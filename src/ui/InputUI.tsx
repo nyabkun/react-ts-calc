@@ -1,4 +1,4 @@
-import { Button, Grid } from "@material-ui/core";
+import { Box, Button, Grid } from "@material-ui/core";
 import { Add, Clear } from "@material-ui/icons";
 import React, { useRef, useState } from "react";
 import { ActionType } from "../action/Action";
@@ -56,9 +56,10 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
   return (
     <>
       <form onSubmit={onSubmit}>
-        <Grid container direction="column" spacing={2}>
+        <Grid container direction="column" spacing={1}>
           <Grid item>
             <NCTextField
+              fullWidth={true}
               ref={inputEle}
               onInputValue={onInputNum}
               variant="outlined"
@@ -66,30 +67,36 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
               value={NaN}
             ></NCTextField>
           </Grid>
-          <Grid item>
-            <Grid container spacing={1} justify="flex-end" item={true}>
-              <Grid item>
-                <Button
-                  type="submit"
-                  disabled={!isInputValid()}
-                  startIcon={<Add />}
-                  variant="contained"
-                  color="primary"
-                >
-                  追加
-                </Button>
-              </Grid>
-              <Grid item>
-                <Button
-                  onClick={onClearClick}
-                  disabled={!canClear}
-                  startIcon={<Clear />}
-                  variant="contained"
-                  color="secondary"
-                >
-                  オールクリア
-                </Button>
-              </Grid>
+          <Grid item container spacing={1}>
+            <Grid item xs={6}>
+              <Button
+                style={{
+                  width: "100%",
+                  height: "100%",
+                }}
+                type="submit"
+                disabled={!isInputValid()}
+                startIcon={<Add />}
+                variant="contained"
+                color="primary"
+              >
+                追加
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                style={{
+                  width: "100%",
+                  height: "100%",
+                }}
+                onClick={onClearClick}
+                disabled={!canClear}
+                startIcon={<Clear />}
+                variant="contained"
+                color="secondary"
+              >
+                オールクリア
+              </Button>
             </Grid>
           </Grid>
         </Grid>

@@ -1,21 +1,22 @@
-import { Grid } from "@material-ui/core";
+import { Box, Grid, Paper } from "@material-ui/core";
+import yellow from "@material-ui/core/colors/yellow";
 import React from "react";
 import { ItemUI } from "./";
 
 export function ItemListUI({ items, dispatch }: any): JSX.Element {
   return (
-    <Grid
-      container
-      direction="column"
-      justify="center"
-      alignItems="center"
-      spacing={5}
-    >
-      {items.map((item: any) => (
-        <Grid item key={item.id}>
-          <ItemUI item={item} dispatch={dispatch} />
-        </Grid>
-      ))}
-    </Grid>
+    <>
+      <Box>
+        {items.map((item: any) => (
+          <Box key={item.id} m={1}>
+            <Paper elevation={3} style={{ backgroundColor: yellow[100] }}>
+              <Box p={1}>
+                <ItemUI item={item} dispatch={dispatch} />
+              </Box>
+            </Paper>
+          </Box>
+        ))}
+      </Box>
+    </>
   );
 }

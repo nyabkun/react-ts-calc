@@ -4,8 +4,6 @@ export class NCTextField extends CTextField<number> {
   static defaultProps = {
     errorValue: NaN,
     textToValue: (text: string) => {
-      console.log(text);
-
       if (!text || !text.trim()) {
         // No helper message, just notify an error
         throw new Error(" ");
