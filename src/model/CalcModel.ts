@@ -1,10 +1,31 @@
-import React from "react";
-import { Action } from "../action/Action";
+import Cookie from "universal-cookie";
 
 export class CalcModel {
+  private static serialVersionID = "v1.0";
   items = [] as CalcItem[];
   nTotalItems = 0;
   sum = 0;
+
+  private _cookies: Cookie | undefined = undefined;
+
+  get cookies(): Cookie {
+    return this._cookies ? this._cookies : new Cookie();
+  }
+
+  get cookieKey() {
+    return this.constructor.name + "_" + CalcModel.serialVersionID;
+  }
+
+  saveToCookie() {
+    let json = JSON.stringify(this);
+    this.cookies.set(this.constructor.name, json);
+  }
+
+  loadFromCookie() {
+    let obj = this.cookies.get(this.constructor.name);
+
+    Object.assign(this, obj);
+  }
 
   clear() {
     this.items = [];

@@ -1,6 +1,5 @@
-import React from "react";
 import { Reducer } from "react";
-import { CalcModel, CalcOp } from "../model";
+import { CalcOp } from "../model";
 import { AppState } from "../ui";
 
 export enum ActionType {
@@ -8,6 +7,8 @@ export enum ActionType {
   DELETE,
   REFRESH,
   CLEAR,
+  SAVE,
+  LOAD,
 }
 
 export interface Action {
@@ -32,6 +33,12 @@ export const calcModelReducer: Reducer<AppState, Action> = (
     case ActionType.CLEAR:
       _clear(state, action);
       return { ...state };
+    case ActionType.SAVE:
+      _save(state, action);
+      return state;
+    case ActionType.LOAD:
+      _load(state, action);
+      return { ...state };
     default:
       return state;
   }
@@ -47,6 +54,18 @@ export const calcModelReducer: Reducer<AppState, Action> = (
 //   action.m.createNewItem(action.payload.value, CalcOp.PLUS);
 //   return action.m.items;
 // } :  Reducer<any, any>;
+
+function _save(state: AppState, action: Action) {
+  state.model.saveToCookie();
+  state.currentInput = 0;
+  return state;
+}
+
+function _load(state: AppState, action: Action) {
+  state.model.loadFromCookie();
+  state.currentInput = 0;
+  return state;
+}
 
 function _add(state: AppState, action: Action) {
   state.model.createNewItem(action.payload, CalcOp.PLUS);

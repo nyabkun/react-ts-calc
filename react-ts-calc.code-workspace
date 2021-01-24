@@ -1,14 +1,11 @@
 {
   "folders": [
-	{
-		"path": "."
-	},
-	{
-		"path": "..\\Diary"
-	},
-	{
-		"path": "..\\react-add-sheet"
-	}
-],
+    {
+      "path": "."
+    },
+    {
+      "path": "..\\Diary"
+    }
+  ],
   "settings": {}
 }

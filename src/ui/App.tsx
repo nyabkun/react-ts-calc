@@ -14,6 +14,7 @@ import { InputUI, ItemListUI, SumUI } from ".";
 import { calcModelReducer as appStateReducer } from "../action/Action";
 import "../App.css";
 import * as M from "../model";
+import { SaveLoadUI } from "./SaveLoadUI";
 
 let theme = createMuiTheme();
 theme = responsiveFontSizes(theme);
@@ -73,6 +74,7 @@ export default function App(): JSX.Element {
             <Box m="auto">
               <SumUI sum={state.model.sum} />
             </Box>
+            <SaveLoadUI dispatch={dispatch} />
           </AppBar>
           <Grid
             container

@@ -54,9 +54,9 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
   }
 
   return (
-    <>
+    <Box mb={4}>
       <form onSubmit={onSubmit}>
-        <Grid container direction="column" spacing={1}>
+        <Grid container direction="column" spacing={2}>
           <Grid item>
             <NCTextField
               fullWidth={true}
@@ -67,7 +67,7 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
               value={NaN}
             ></NCTextField>
           </Grid>
-          <Grid item container spacing={1}>
+          <Grid item container spacing={2}>
             <Grid item xs={6}>
               <Button
                 style={{
@@ -101,6 +101,6 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
           </Grid>
         </Grid>
       </form>
-    </>
+    </Box>
   );
 }
