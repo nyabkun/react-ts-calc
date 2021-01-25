@@ -1,11 +1,16 @@
 {
   "folders": [
     {
+      "path": "..\\dev-tool"
+    },
+    {
+      "path": "..\\diary"
+    },
+    {
       "path": "."
     },
     {
-      "path": "..\\Diary"
+      "path": "..\\test-typescript"
     }
-  ],
-  "settings": {}
+  ]
 }
