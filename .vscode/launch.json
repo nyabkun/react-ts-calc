@@ -1,0 +1,20 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "url": "http://localhost:3000",
+      //@Nyab D_2021-01-23
+      "webRoot": "${fileDirname}/../src/",
+      // "webRoot": "${workspaceFolder}",
+      //https://stackoverflow.com/questions/36783068/cannot-connect-to-the-target-connect-econnrefused-127-0-0-19222
+      //@Nyab D_2021-01-23
+      "runtimeArgs": [" --remote-debugging-port=9222"]
+    }
+  ]
+}
