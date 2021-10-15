@@ -63,7 +63,7 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
               ref={inputEle}
               onInputValue={onInputNum}
               variant="outlined"
-              label="数字を入力"
+              label="Input Number"
               value={NaN}
             ></NCTextField>
           </Grid>
@@ -95,7 +95,7 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
                 variant="contained"
                 color="secondary"
               >
-                オールクリア
+                Clear All
               </Button>
             </Grid>
           </Grid>
