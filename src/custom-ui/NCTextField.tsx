@@ -12,7 +12,7 @@ export class NCTextField extends CTextField<number> {
       let num = Number(text.replaceAll(".", "").replaceAll(",", ""));
 
       if (isNaN(num)) {
-        throw new Error("数値が読み取れません。");
+        throw new Error("Couldn't read the number.");
       }
       return num;
     },
