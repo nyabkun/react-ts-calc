@@ -48,7 +48,7 @@ export const ItemUI: React.FC<any> = ({ item, dispatch }) => {
           fullWidth={true}
           onInputValue={onInputNum}
           variant="standard"
-          // label="数字を変更"
+          // label="Change Number"
           value={item.value}
         />
       </Box>
@@ -59,7 +59,7 @@ export const ItemUI: React.FC<any> = ({ item, dispatch }) => {
         color="secondary"
         onClick={onDeleteClick}
       >
-        削除
+        Delete
       </Button>
     </Box>
   );
