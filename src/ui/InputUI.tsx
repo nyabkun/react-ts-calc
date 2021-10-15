@@ -80,7 +80,7 @@ export function InputUI({ dispatch, canClear }: any): JSX.Element {
                 variant="contained"
                 color="primary"
               >
-                追加
+                Add
               </Button>
             </Grid>
             <Grid item xs={6}>
